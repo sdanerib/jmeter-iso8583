@@ -293,6 +293,8 @@ and the calculated ARQC value will be added as an additional subfield.
 - *Account Sequence Number*: Input parameter for session key derivation (2 digits).
 - *Additional Transaction Data*: Hex digits entered here will be appended to the sequence of ARQC input bytes 
 extracted from the ICC Data field. Useful if non-standard tags are to be included in the calculation.
+- *Padding (hex)*: Padding bytes to append to transaction data before ARQC calculation 
+(leave blank for zero-padding, 80 for ISO9797-1 Method 2).
 
 Missing ARQC input tags will be ignored, i.e. no validation is performed that all mandatory tags are present.
 

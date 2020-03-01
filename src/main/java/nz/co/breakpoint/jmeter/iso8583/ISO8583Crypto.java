@@ -43,7 +43,8 @@ public class ISO8583Crypto extends AbstractTestElement
         SKDM = "skdm",
         PAN = "pan",
         PSN = "psn",
-        TXNDATA = "txnData";
+        TXNDATA = "txnData",
+        PADDING= "padding";
 
     static final String[] macAlgorithms = new String[]{"", "DESEDE", "ISO9797ALG3MACWITHISO7816-4PADDING"};
     static final String[] skdMethods;
@@ -219,9 +220,14 @@ public class ISO8583Crypto extends AbstractTestElement
 
         final StringBuilder transactionData = new StringBuilder();
         for (String tag : arqcInputTags) {
+            // TODO different ways to extract CVR from 9F10
             transactionData.append(emvData.getOrDefault(tag, ""));
         }
         transactionData.append(getTxnData()); // additional transaction data (as hex string)
+
+        if (transactionData.length() % 16 != 0) { // 16 hex digits = 8 bytes
+            transactionData.append(getPadding());
+        }
 
         final String arqc = securityModule.calculateARQC(MKDMethod.OPTION_A,
             SKDMethod.valueOf(getSkdm()), hexKey,
@@ -269,4 +275,7 @@ public class ISO8583Crypto extends AbstractTestElement
 
     public String getTxnData() { return getPropertyAsString(TXNDATA); }
     public void setTxnData(String txnData) { setProperty(TXNDATA, txnData); }
+
+    public String getPadding() { return getPropertyAsString(PADDING); }
+    public void setPadding(String padding) { setProperty(PADDING, padding); }
 }
